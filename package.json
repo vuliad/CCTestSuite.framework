@@ -1,0 +1,21 @@
+{
+  "name": "cc-test-suite-framework",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c",
+    "test": "node --loader ts-node/esm --experimental-specifier-resolution=node ./scripts/run-tests.ts"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^24.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@types/glob": "^8.1.0",
+    "@types/node": "^22.14.1",
+    "glob": "^11.0.1",
+    "rollup": "^3.29.5",
+    "rollup-plugin-dts": "^5.0.0",
+    "rollup-plugin-typescript2": "^0.34.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^4.8.4"
+  }
+}
