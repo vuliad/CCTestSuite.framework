@@ -272,4 +272,88 @@ describe('Assertion', () => {
             expect((error as Error).message).toContain('must be a function to use toThrow');
         });
     });
+
+    describe('expect().toMatch()', () => {
+        const testString = 'Hello world, this is a test string.';
+
+        it('should pass when string contains substring', () => {
+            expect(testString).toMatch('world');
+        });
+
+        it('should pass when string matches regex', () => {
+            expect(testString).toMatch(/test string\.$/);
+            expect('123-456').toMatch(/^\d{3}-\d{3}$/);
+        });
+
+        it('should fail when string does not contain substring', () => {
+            let error;
+            try {
+                expect(testString).toMatch('goodbye');
+            } catch (e) {
+                error = e;
+            }
+            expect(error).toBeTruthy();
+            expect((error as Error).message).toContain('to contain the substring');
+            expect((error as Error).message).toContain('\'goodbye\'');
+        });
+
+        it('should fail when string does not match regex', () => {
+            let error;
+            try {
+                expect(testString).toMatch(/goodbye/);
+            } catch (e) {
+                error = e;
+            }
+            expect(error).toBeTruthy();
+            expect((error as Error).message).toContain('to match the regular expression');
+            expect((error as Error).message).toContain('/goodbye/');
+        });
+
+        it('should fail when actual is not a string', () => {
+            let error;
+            try {
+                // @ts-ignore - Testing invalid input type
+                expect(123).toMatch('123');
+            } catch (e) {
+                error = e;
+            }
+            expect(error).toBeTruthy();
+            expect((error as Error).message).toContain('must be a string to use toMatch');
+            expect((error as Error).message).toContain('received type number');
+        });
+
+        // --- Negated tests ---
+        it('should pass with .not when string does not contain substring', () => {
+            expect(testString).not.toMatch('goodbye');
+        });
+
+        it('should pass with .not when string does not match regex', () => {
+            expect(testString).not.toMatch(/goodbye/);
+        });
+
+        it('should fail with .not when string contains substring', () => {
+            let error;
+            try {
+                expect(testString).not.toMatch('world');
+            } catch (e) {
+                error = e;
+            }
+            expect(error).toBeTruthy();
+            expect((error as Error).message).toContain('not to contain the substring');
+            expect((error as Error).message).toContain('\'world\'');
+        });
+
+        it('should fail with .not when string matches regex', () => {
+            let error;
+            try {
+                expect(testString).not.toMatch(/test string\.$/);
+            } catch (e) {
+                error = e;
+            }
+            expect(error).toBeTruthy();
+            expect((error as Error).message).toContain('not to match the regular expression');
+            expect((error as Error).message).toContain('/test string\\.$/'); // Note: Regex string representation might vary slightly
+        });
+    });
+
 });

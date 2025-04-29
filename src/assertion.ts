@@ -550,6 +550,37 @@ export class Assertion {
             }
         }
     }
+
+    /**
+     * Check if a string matches a regular expression or contains a substring.
+     * @param expected - A RegExp or a string to match against.
+     */
+    toMatch(expected: RegExp | string): void {
+        if (typeof this.actual !== 'string') {
+            // Throw a specific error if the actual value isn't a string
+            throw new Error(this.generateErrorMessage(
+                expected,
+                `Actual value %{actual} must be a string to use toMatch, but received type ${getType(this.actual)}`
+            ));
+        }
+
+        let condition: boolean;
+        let messageTpl: string;
+
+        if (expected instanceof RegExp) {
+            condition = expected.test(this.actual);
+            messageTpl = `Expected %{actual} %{negation}to match the regular expression %{expected}`;
+        } else if (typeof expected === 'string') {
+            condition = this.actual.includes(expected);
+            messageTpl = `Expected %{actual} %{negation}to contain the substring %{expected}`;
+        } else {
+            // Should not happen with TypeScript, but good for robustness
+            throw new Error('Expected value for toMatch must be a string or a RegExp');
+        }
+
+        this.check(condition, expected, messageTpl);
+    }
+
 }
 
 // Factory function
